@@ -1,0 +1,22 @@
+{
+  "name": "note-app",
+  "version": "1.0.0",
+  "description": "simple Notes",
+  "keywords": [
+    "node",
+    "note",
+    "javascript"
+  ],
+  "license": "ISC",
+  "author": "Aleksandr 'Katsu'",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@types/yargs": "^17.0.35",
+    "chalk": "^4.1.2",
+    "yargs": "^17.1.1"
+  }
+}
