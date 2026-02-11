@@ -6,7 +6,7 @@ const port = 3000;
 const server = http.createServer((req, res) => {
 	console.log('res obj', res);
 	
-	res.end('hello world!!!');
+	res.end('hello world!');
 })
 
 server.listen(port, () => {
