@@ -34,8 +34,8 @@ yargs.command({
 			demandOption: true,
 		}
 	},
-	handler({id}) {
-		removeNote(id);
+	async handler({id}) {
+		await removeNote(id);
 	}
 })
 
