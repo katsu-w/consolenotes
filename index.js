@@ -1,14 +1,23 @@
-const http = require('http');
-const chalk = require('chalk');
+const express = require('express');
+
+const {addNote, getNotes} = require('./notes.controller.js');
 
 const port = 3000;
+const app = express();
 
-const server = http.createServer((req, res) => {
-	console.log('res obj', res);
-	
-	res.end('hello world!');
+app.set('view engine', 'ejs');
+app.set('views', 'pages');
+
+app.use(express.urlencoded({extended: true}));
+
+app.get('/', async (req, res) => {
+	res.render('index', {title: 'Express Notes', notes: await getNotes()});
 })
 
-server.listen(port, () => {
-	console.log(chalk.green('Server listening on port ' + port));
-});
+app.post('/', async (req, res) => {
+	await addNote(req.body.title);
+	res.render('index', {title: 'Express Notes', notes: await getNotes()});
+})
+
+app.listen(port, () => {
+})
