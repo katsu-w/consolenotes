@@ -1,8 +1,12 @@
 const express = require('express');
 const path = require('path');
 
-const {addNote, getNotes} = require('./notes.controller.js');
-const {removeNote} = require("./notes.controller");
+const {
+	addNote,
+	getNotes,
+	removeNote,
+	editNote
+} = require('./notes.controller.js');
 
 const port = 3000;
 const app = express();
@@ -12,6 +16,7 @@ app.set('views', 'pages');
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.json());
 
 app.get('/', async (req, res) => {
 	res.render('index', {
@@ -37,6 +42,15 @@ app.delete('/:id', async (req, res) => {
 		notes: await getNotes(),
 		created: false
 	});
+})
+
+app.put('/:id/:editedNote', async (req, res) => {
+	await editNote(req.params.id, req.params.editedNote);
+	res.render('index', {
+		title: 'Express Notes',
+		notes: await getNotes(),
+		created: false
+	})
 })
 
 app.listen(port, () => {
