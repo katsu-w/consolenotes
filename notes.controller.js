@@ -18,15 +18,6 @@ async function addNote(title) {
 	console.log(chalk.bgGreen('Note added successfully.'));
 }
 
-async function printNotes() {
-	const notes = await getNotes();
-	
-	console.log(chalk.bgBlue('Here is the list of notes:'));
-	notes.forEach(note => {
-		console.log(chalk.blue(note.id + ' ' + note.title));
-	})
-}
-
 async function getNotes() {
 	const notes = await fs.readFile(notesPath, {encoding: 'utf8'});
 	return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
@@ -41,6 +32,16 @@ async function removeNote(id) {
 	console.log(chalk.bgGreen('Note removed successfully.'));
 }
 
+async function editNote(id, editedNote) {
+	const notes = await getNotes();
+	const editNoteIndex = notes.findIndex(note => note.id === id);
+	notes[editNoteIndex].title = editedNote;
+	
+	await fs.writeFile(notesPath, JSON.stringify(notes));
+	
+	console.log(chalk.bgGreen('Note edited successfully.'));
+}
+
 module.exports = {
-	addNote, getNotes, removeNote
+	addNote, getNotes, removeNote, editNote
 }
