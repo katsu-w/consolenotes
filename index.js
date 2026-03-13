@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const {
 	addNote,
@@ -22,17 +23,29 @@ app.get('/', async (req, res) => {
 	res.render('index', {
 		title: 'Express Notes',
 		notes: await getNotes(),
-		created: false
+		created: false,
+		error: false
 	});
 })
 
 app.post('/', async (req, res) => {
-	await addNote(req.body.title);
-	res.render('index', {
-		title: 'Express Notes',
-		notes: await getNotes(),
-		created: true
-	});
+	try {
+		await addNote(req.body.title);
+		res.render('index', {
+			title: 'Express Notes',
+			notes: await getNotes(),
+			created: true,
+			error: false
+		});
+	} catch (error) {
+		console.error('Creation error', error);
+		res.render('index', {
+			title: 'Express Notes',
+			notes: await getNotes(),
+			created: false,
+			error: true
+		});
+	}
 })
 
 app.delete('/:id', async (req, res) => {
@@ -40,7 +53,8 @@ app.delete('/:id', async (req, res) => {
 	res.render('index', {
 		title: 'Express Notes',
 		notes: await getNotes(),
-		created: false
+		created: false,
+		error: false
 	});
 })
 
@@ -49,9 +63,14 @@ app.put('/:id/:editedNote', async (req, res) => {
 	res.render('index', {
 		title: 'Express Notes',
 		notes: await getNotes(),
-		created: false
+		created: false,
+		error: false
 	})
 })
 
-app.listen(port, () => {
+mongoose.connect('mongodb://user:mongopass@localhost:27017/notes?authSource=admin').then(() => {
+	app.listen(port, () => {
+		console.log(`Server started on port ${port}`);
+	})
 })
+
