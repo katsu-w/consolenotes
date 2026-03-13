@@ -1,43 +1,25 @@
-const fs = require('fs/promises');
-const path = require('path');
 const chalk = require('chalk');
-
-const notesPath = path.join(__dirname, 'db.json');
+const Note = require('./models/Note');
 
 async function addNote(title) {
-	const notes = await getNotes();
+	await Note.create({title});
 	
-	const note = {
-		title,
-		id: Date.now().toString(),
-	}
-	
-	notes.push(note);
-	
-	await fs.writeFile(notesPath, JSON.stringify(notes));
 	console.log(chalk.bgGreen('Note added successfully.'));
 }
 
 async function getNotes() {
-	const notes = await fs.readFile(notesPath, {encoding: 'utf8'});
-	return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : [];
+	const notes = await Note.find();
+	return notes;
 }
 
 async function removeNote(id) {
-	const notes = await getNotes();
-	const filteredNotes = notes.filter(note => note.id !== id);
-	
-	await fs.writeFile(notesPath, JSON.stringify(filteredNotes));
+	await Note.deleteOne({_id: id});
 	
 	console.log(chalk.bgGreen('Note removed successfully.'));
 }
 
 async function editNote(id, editedNote) {
-	const notes = await getNotes();
-	const editNoteIndex = notes.findIndex(note => note.id === id);
-	notes[editNoteIndex].title = editedNote;
-	
-	await fs.writeFile(notesPath, JSON.stringify(notes));
+	await Note.updateOne({_id: id}, {title: editedNote});
 	
 	console.log(chalk.bgGreen('Note edited successfully.'));
 }
